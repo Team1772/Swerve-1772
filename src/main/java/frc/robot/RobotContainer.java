@@ -44,7 +44,16 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
       () -> driverXbox.getLeftY() * -1,
       () -> driverXbox.getLeftX() * -1)
-      .withControllerRotationAxis(driverXbox::getRightX)
+      // Modificando para usar os triggers para controlar a rotação
+      .withControllerRotationAxis(() -> {
+          double leftTrigger = driverXbox.getLeftTriggerAxis();  // Valor entre 0 e 1
+          double rightTrigger = driverXbox.getRightTriggerAxis();  // Valor entre 0 e 1
+
+          // Definindo a rotação com base nos triggers
+          double rotation = rightTrigger - leftTrigger;
+
+          return rotation;  // Retorna o valor da rotação
+      })
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(0.8)
       .allianceRelativeControl(true);
