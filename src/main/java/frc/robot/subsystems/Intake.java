@@ -1,24 +1,29 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-    private final TalonFX IntakeMotor;
-    private final DutyCycleOut percentOutCycle = new DutyCycleOut(0);
-
+    private final TalonSRX intakeMotor;
+    
     public Intake() {
-        IntakeMotor = new TalonFX(12);  
-        IntakeMotor.getConfigurator().apply(new TalonFXConfiguration());
+        intakeMotor = new TalonSRX(12);
+
+        TalonSRXConfiguration configs = new TalonSRXConfiguration();
+
+        intakeMotor.configAllSettings(configs);
+        intakeMotor.setNeutralMode(NeutralMode.Coast);
+        intakeMotor.setInverted(false);
     }
 
     public void percentOut(double speed) {
-        IntakeMotor.setControl(percentOutCycle.withOutput(speed));
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, speed);
     }
 
     public void stop() {
-        IntakeMotor.stopMotor();
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, 0);
     }
 }
