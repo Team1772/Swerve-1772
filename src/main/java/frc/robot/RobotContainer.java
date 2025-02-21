@@ -8,17 +8,27 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Joint;
+import frc.robot.subsystems.Puncher;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
 import java.io.File;
+import java.util.Map;
+
 import swervelib.SwerveInputStream;
 
 /**
@@ -31,12 +41,18 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
+  private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private NetworkTable table;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
-  private Shooter shooter;
+  private final Intake intake;
+  private final Puncher puncher;
+  private final Joint joint;
+  //private Shooter shooter;
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled
    * by angular velocity.
@@ -103,7 +119,14 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    setupNetworkTable();
+    table = inst.getTable("Shuffleboard");
+
     //shooter = new Shooter(drivebase.getVision());
+    intake = new Intake();
+    puncher = new Puncher();
+    joint = new Joint();
+
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
@@ -166,6 +189,8 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     }
 
+    driverXbox.povUp().whileTrue(Commands.startEnd(() -> joint.percentOut(table.getEntry("Intake IN").getDouble(0)), () -> joint.stop(), joint));
+
   }
 
   /**
@@ -180,5 +205,17 @@ public class RobotContainer {
 
   public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
+  }
+
+  public void setupNetworkTable() {
+    ShuffleboardTab tab = Shuffleboard.getTab("Main");
+    addTab(tab, "Intake IN");
+  }
+
+  public void addTab(ShuffleboardTab tab, String title) {
+    tab.add(title, 0)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withSize(2, 1)
+        .withProperties(Map.of("min", -1, "max", 1));
   }
 }
