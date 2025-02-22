@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -40,9 +41,6 @@ import swervelib.SwerveInputStream;
  * trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
-  private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private NetworkTable table;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -119,8 +117,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    setupNetworkTable();
-    table = inst.getTable("Shuffleboard");
 
     //shooter = new Shooter(drivebase.getVision());
     intake = new Intake();
@@ -189,8 +185,11 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     }
 
-    driverXbox.povUp().whileTrue(Commands.startEnd(() -> joint.percentOut(table.getEntry("Intake IN").getDouble(0)), () -> joint.stop(), joint));
-
+    driverXbox.povRight().whileTrue(Commands.startEnd(() -> intake.percentOut(0), () -> intake.stop(), intake));
+    driverXbox.povLeft().whileTrue(Commands.startEnd(() -> intake.percentOut(0), () -> intake.stop(), intake));
+    driverXbox.povUp().whileTrue(Commands.startEnd(() -> joint.percentOut(0), () -> joint.stop(), joint));
+    driverXbox.povDown().whileTrue(Commands.startEnd(() -> joint.percentOut(0), () -> joint.stop(), joint));
+    driverXbox.y().whileTrue(Commands.startEnd(() -> puncher.percentOut(0), () -> puncher.stop(), puncher));
   }
 
   /**
@@ -205,17 +204,5 @@ public class RobotContainer {
 
   public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
-  }
-
-  public void setupNetworkTable() {
-    ShuffleboardTab tab = Shuffleboard.getTab("Main");
-    addTab(tab, "Intake IN");
-  }
-
-  public void addTab(ShuffleboardTab tab, String title) {
-    tab.add(title, 0)
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .withSize(2, 1)
-        .withProperties(Map.of("min", -1, "max", 1));
   }
 }
