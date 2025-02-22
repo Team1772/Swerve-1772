@@ -15,7 +15,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Puncher extends SubsystemBase {
+public class PuncherSubsystem extends SubsystemBase {
     private final TalonFX puncherLeftMotor;
     private final TalonFX puncherRightMotor;
     private final Follower follower;
@@ -23,7 +23,7 @@ public class Puncher extends SubsystemBase {
     private final DutyCycleOut percentOutCycle = new DutyCycleOut(0);
     private final PositionDutyCycle positionCycle = new PositionDutyCycle(0);
 
-    public Puncher() {
+    public PuncherSubsystem() {
         puncherLeftMotor = new TalonFX(10);
         puncherRightMotor = new TalonFX(11);
         follower = new Follower(10, false);

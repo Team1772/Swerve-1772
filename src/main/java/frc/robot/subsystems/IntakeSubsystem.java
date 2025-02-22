@@ -6,10 +6,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Intake extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     private final TalonSRX intakeMotor;
     
-    public Intake() {
+    public IntakeSubsystem() {
         intakeMotor = new TalonSRX(12);
 
         TalonSRXConfiguration configs = new TalonSRXConfiguration();

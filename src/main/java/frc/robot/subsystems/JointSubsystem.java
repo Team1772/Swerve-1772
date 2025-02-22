@@ -18,12 +18,12 @@ import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Joint extends SubsystemBase {
+public class JointSubsystem extends SubsystemBase {
     private final TalonSRX intakeLeftMotor;
     private final TalonSRX intakeRightMotor;
     private final DutyCycleEncoder absoluteEncoder;
 
-    public Joint() {
+    public JointSubsystem() {
         intakeLeftMotor = new TalonSRX(13);
         intakeRightMotor = new TalonSRX(14);
 
