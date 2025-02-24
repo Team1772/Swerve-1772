@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.HIDConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JointSubsystem;
@@ -59,7 +59,7 @@ public class DriverButtonBindings {
                 double rotation = rightTrigger - leftTrigger;
                 return rotation;
             })
-            .deadband(OperatorConstants.DEADBAND)
+            .deadband(HIDConstants.DEADBAND)
             .scaleTranslation(0.8)
             .allianceRelativeControl(true);
 
@@ -74,7 +74,7 @@ public class DriverButtonBindings {
             () -> -driverXbox.getLeftX())
             .withControllerRotationAxis(() -> driverXbox.getRawAxis(
                 2))
-            .deadband(OperatorConstants.DEADBAND)
+            .deadband(HIDConstants.DEADBAND)
             .scaleTranslation(0.8)
             .allianceRelativeControl(true);
 
