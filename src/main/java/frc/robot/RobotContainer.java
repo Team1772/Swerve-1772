@@ -135,7 +135,7 @@ public class RobotContainer {
         driveDirectAngleKeyboard);
 
     if (RobotBase.isSimulation()) {
-      drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+      //drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
     } else {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     }
@@ -143,6 +143,9 @@ public class RobotContainer {
     if (Robot.isSimulation()) {
       driverXbox.start().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
       driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
+      driverXbox.y().onTrue(Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(3))));
+      driverXbox.a().onTrue(Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(5))));
+      driverXbox.b().onTrue(Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(-8.4))));
 
     }
     if (DriverStation.isTest()) {
