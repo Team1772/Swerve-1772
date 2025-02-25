@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.utils.LinearInterpolator3D;
+
 import java.io.File;
 import swervelib.SwerveInputStream;
 
@@ -46,13 +48,13 @@ public class RobotContainer {
       () -> driverXbox.getLeftX() * -1)
       // Modificando para usar os triggers para controlar a rotação
       .withControllerRotationAxis(() -> {
-          double leftTrigger = driverXbox.getLeftTriggerAxis();  // Valor entre 0 e 1
-          double rightTrigger = driverXbox.getRightTriggerAxis();  // Valor entre 0 e 1
+        double leftTrigger = driverXbox.getLeftTriggerAxis(); // Valor entre 0 e 1
+        double rightTrigger = driverXbox.getRightTriggerAxis(); // Valor entre 0 e 1
 
-          // Definindo a rotação com base nos triggers
-          double rotation = rightTrigger - leftTrigger;
+        // Definindo a rotação com base nos triggers
+        double rotation = rightTrigger - leftTrigger;
 
-          return rotation;  // Retorna o valor da rotação
+        return rotation; // Retorna o valor da rotação
       })
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(0.8)
@@ -102,8 +104,10 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+
   public RobotContainer() {
-    //shooter = new Shooter(drivebase.getVision());
+    // shooter = new Shooter(drivebase.getVision());
+
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
@@ -135,7 +139,7 @@ public class RobotContainer {
         driveDirectAngleKeyboard);
 
     if (RobotBase.isSimulation()) {
-      //drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+      // drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
     } else {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     }
@@ -143,9 +147,11 @@ public class RobotContainer {
     if (Robot.isSimulation()) {
       driverXbox.start().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
       driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
-      driverXbox.y().onTrue(Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(3))));
-      driverXbox.a().onTrue(Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(5))));
-      driverXbox.b().onTrue(Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(-8.4))));
+      driverXbox.y().onTrue(
+          Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(3))));
+      driverXbox.a().onTrue((Commands.print(String.valueOf(InterpolationValues.TEST_LINEAR3D.getInterpolatedValues(2.5, 3.5, 4.5)))));
+      driverXbox.b().onTrue(
+          Commands.print(String.valueOf(InterpolationValues.SHOOTER_ANGLE_INTERPOLATOR.getInterpolatedValue(-8.4))));
 
     }
     if (DriverStation.isTest()) {
@@ -158,7 +164,7 @@ public class RobotContainer {
       driverXbox.leftBumper().onTrue(Commands.none());
       driverXbox.rightBumper().onTrue(Commands.none());
     } else {
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      //driverXbox.a().onTrue((Commands.print(String.valueOf(interpolator.getInterpolatedValues(2.5, 3.5, 4.5)))));
       driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       driverXbox.b().whileTrue(
           drivebase.driveToPose(
