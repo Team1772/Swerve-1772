@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.HIDConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JointSubsystem;
 import frc.robot.subsystems.PuncherSubsystem;
@@ -25,6 +26,7 @@ public class DriverButtonBindings {
     private final IntakeSubsystem intakeSubsystem;
     private final JointSubsystem jointSubsystem;
     private final PuncherSubsystem puncherSubsystem;
+    private final ElevatorSubsystem elevatorSubsystem;
 
     private final SwerveInputStream driveDirectAngle;
     private final SwerveInputStream driveRobotOriented;
@@ -42,13 +44,14 @@ public class DriverButtonBindings {
 
 
     public DriverButtonBindings(CommandXboxController driverXbox, SwerveSubsystem drivebase, 
-                                IntakeSubsystem intake, JointSubsystem joint, PuncherSubsystem puncher) {
+                                IntakeSubsystem intake, JointSubsystem joint, PuncherSubsystem puncher, ElevatorSubsystem elevatorSubsystem) {
         this.driverXbox = driverXbox;
 
         this.swerveSubsystem = drivebase;
         this.intakeSubsystem = intake;
         this.jointSubsystem = joint;
         this.puncherSubsystem = puncher;
+        this.elevatorSubsystem = elevatorSubsystem;
 
         driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
             () -> driverXbox.getLeftY() * -1,
@@ -100,6 +103,7 @@ public class DriverButtonBindings {
         intakeButtonBindings();
         jointButtonBindings();
         puncherButtonBindings();
+        elevatorButtonBindings();
     }
 
     public void drivebaseDefaultButtonBindings() {
@@ -142,16 +146,21 @@ public class DriverButtonBindings {
     }
 
     public void intakeButtonBindings() {
-        driverXbox.povRight().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(0), () -> intakeSubsystem.stop(), intakeSubsystem));
-        driverXbox.povLeft().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(0), () -> intakeSubsystem.stop(), intakeSubsystem)); 
+        driverXbox.povRight().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(0.5), () -> intakeSubsystem.stop(), intakeSubsystem));
+        driverXbox.povLeft().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(0.5), () -> intakeSubsystem.stop(), intakeSubsystem)); 
     }
 
     public void jointButtonBindings() {
-        driverXbox.povUp().whileTrue(Commands.startEnd(() -> jointSubsystem.percentOut(0), () -> jointSubsystem.stop(), jointSubsystem));
-        driverXbox.povDown().whileTrue(Commands.startEnd(() -> jointSubsystem.percentOut(0), () -> jointSubsystem.stop(), jointSubsystem));
+        driverXbox.povUp().whileTrue(Commands.startEnd(() -> jointSubsystem.percentOut(0.5), () -> jointSubsystem.stop(), jointSubsystem));
+        driverXbox.povDown().whileTrue(Commands.startEnd(() -> jointSubsystem.percentOut(0.5), () -> jointSubsystem.stop(), jointSubsystem));
     }
 
     public void puncherButtonBindings() {
         driverXbox.y().whileTrue(Commands.startEnd(() -> puncherSubsystem.percentOut(0), () -> puncherSubsystem.stop(), puncherSubsystem));
+    }
+
+    public void elevatorButtonBindings() {
+        driverXbox.a().whileTrue(Commands.startEnd(elevatorSubsystem::moveUp, elevatorSubsystem::stop, elevatorSubsystem));
+        driverXbox.b().whileTrue(Commands.startEnd(elevatorSubsystem::moveDown, elevatorSubsystem::stop, elevatorSubsystem));
     }
 }

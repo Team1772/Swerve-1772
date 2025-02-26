@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.buttonBindings.DriverButtonBindings;
 import frc.robot.buttonBindings.OperatorButtonBindings;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JointSubsystem;
 import frc.robot.subsystems.PuncherSubsystem;
@@ -30,6 +31,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem;
   private final PuncherSubsystem puncherSubsystem;
   private final JointSubsystem jointSubsystem;
+  private final ElevatorSubsystem elevatorSubsystem;
 
   private final DriverButtonBindings driverButtonBindings;
   private final OperatorButtonBindings operatorButtonBindings;
@@ -43,9 +45,11 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     puncherSubsystem = new PuncherSubsystem();
     jointSubsystem = new JointSubsystem();
+    elevatorSubsystem = new ElevatorSubsystem();
+    
 
     driverButtonBindings = new DriverButtonBindings(driverXbox, swerveSubsystem, intakeSubsystem, 
-                                                    jointSubsystem, puncherSubsystem);
+                                                    jointSubsystem, puncherSubsystem, elevatorSubsystem);
     operatorButtonBindings = new OperatorButtonBindings(operatorXbox);
     configureBindings();
 
