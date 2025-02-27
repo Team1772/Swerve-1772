@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "SPARK MAX [1] RELATIVE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
       "SPARK MAX [2]": {
         "header": {
           "open": true
@@ -17,6 +22,16 @@
         }
       },
       "SPARK MAX [7]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[10]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[12]": {
         "header": {
           "open": true
         }
@@ -51,6 +66,14 @@
           "open": true
         }
       }
+    },
+    "RoboRIO": {
+      "6V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      }
     }
   },
   "NTProvider": {
@@ -60,6 +83,7 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [13]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/IMU": "Alerts",
@@ -118,6 +142,23 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
+    },
+    "Transitory Values": {
+      "open": false
+    },
+    "retained": {
+      "Shuffleboard": {
+        "Main": {
+          "open": true
+        },
+        "open": true
+      }
+    },
     "transitory": {
       "FMSInfo": {
         "open": true
@@ -134,6 +175,27 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "shuffleboard@1": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
     "visible": true
   }
 }

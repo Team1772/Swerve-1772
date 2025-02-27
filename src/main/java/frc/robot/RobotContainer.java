@@ -8,23 +8,37 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.JointSubsystem;
+import frc.robot.subsystems.PuncherSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
 import java.io.File;
+import java.util.Map;
+
 import swervelib.SwerveInputStream;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very
- * little robot logic should actually be handled in the {@link Robot} periodic
+ * little robot logic should actually be handled in the {@link Robot}  periodic
  * methods (other than the scheduler calls).
  * Instead, the structure of the robot (including subsystems, commands, and
  * trigger mappings) should be declared here.
@@ -36,7 +50,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve"));
-  private Shooter shooter;
+  private final IntakeSubsystem intake;
+  private final PuncherSubsystem puncher;
+  private final JointSubsystem joint;
+  //private Shooter shooter;
+
+  SendableChooser <Command> autoChooser = new SendableChooser <Command> ();
+
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled
    * by angular velocity.
@@ -103,7 +123,14 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    setupAuto();
+
     //shooter = new Shooter(drivebase.getVision());
+    intake = new IntakeSubsystem();
+    puncher = new PuncherSubsystem();
+    joint = new JointSubsystem();
+
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
@@ -166,6 +193,11 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     }
 
+    driverXbox.povRight().whileTrue(Commands.startEnd(() -> intake.percentOut(0), () -> intake.stop(), intake));
+    driverXbox.povLeft().whileTrue(Commands.startEnd(() -> intake.percentOut(0), () -> intake.stop(), intake));
+    driverXbox.povUp().whileTrue(Commands.startEnd(() -> joint.percentOut(0), () -> joint.stop(), joint));
+    driverXbox.povDown().whileTrue(Commands.startEnd(() -> joint.percentOut(0), () -> joint.stop(), joint));
+    driverXbox.y().whileTrue(Commands.startEnd(() -> puncher.percentOut(0), () -> puncher.stop(), puncher));
   }
 
   /**
@@ -175,10 +207,18 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("testauto");
+    return autoChooser.getSelected();
+    //return drivebase.getAutonomousCommand("testauto");
   }
 
   public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
   }
+
+  public void setupAuto() {
+    SmartDashboard.putData(autoChooser);
+    autoChooser.setDefaultOption("No auto", new PrintCommand("No Auto Selected"));
+    autoChooser.addOption("Also no auto", new PrintCommand("Also No Auto Selected"));
+  }
+
 }
