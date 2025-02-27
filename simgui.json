@@ -60,6 +60,7 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [13]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/IMU": "Alerts",
@@ -118,6 +119,14 @@
     }
   },
   "NetworkTables": {
+    "retained": {
+      "Shuffleboard": {
+        "Main": {
+          "open": true
+        },
+        "open": true
+      }
+    },
     "transitory": {
       "FMSInfo": {
         "open": true
@@ -134,6 +143,27 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "shuffleboard@1": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
     "visible": true
   }
 }
