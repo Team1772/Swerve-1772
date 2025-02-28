@@ -35,8 +35,8 @@ public class PuncherSubsystem extends SubsystemBase {
         TalonFXConfigurator slaveConfig = puncherRightMotor.getConfigurator();
 
         Slot0Configs positionPIDConfigs = new Slot0Configs();
-        positionPIDConfigs.kP = 0;
-        positionPIDConfigs.kI = 0;
+        positionPIDConfigs.kP = 0.2;
+        positionPIDConfigs.kI = 0.005;
         positionPIDConfigs.kD = 0;
         positionPIDConfigs.kA = 0;
         masterConfig.apply(positionPIDConfigs);

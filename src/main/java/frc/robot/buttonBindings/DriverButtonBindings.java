@@ -97,13 +97,13 @@ public class DriverButtonBindings {
     }
 
     public void configureBindings() {
-        drivebaseDefaultButtonBindings();
-        drivebaseSimulationButtonBindings();
-        drivebaseTestButtonBindings();
+        //drivebaseDefaultButtonBindings();
+        //drivebaseSimulationButtonBindings();
+        //drivebaseTestButtonBindings();
         intakeButtonBindings();
-        jointButtonBindings();
+        //jointButtonBindings();
         puncherButtonBindings();
-        elevatorButtonBindings();
+        //elevatorButtonBindings();
     }
 
     public void drivebaseDefaultButtonBindings() {
@@ -146,8 +146,8 @@ public class DriverButtonBindings {
     }
 
     public void intakeButtonBindings() {
-        driverXbox.povRight().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(0.5), () -> intakeSubsystem.stop(), intakeSubsystem));
-        driverXbox.povLeft().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(0.5), () -> intakeSubsystem.stop(), intakeSubsystem)); 
+        driverXbox.povRight().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(0.6), () -> intakeSubsystem.stop(), intakeSubsystem));
+        driverXbox.povLeft().whileTrue(Commands.startEnd(() -> intakeSubsystem.percentOut(-0.6), () -> intakeSubsystem.stop(), intakeSubsystem)); 
     }
 
     public void jointButtonBindings() {
@@ -156,7 +156,8 @@ public class DriverButtonBindings {
     }
 
     public void puncherButtonBindings() {
-        driverXbox.y().whileTrue(Commands.startEnd(() -> puncherSubsystem.percentOut(0), () -> puncherSubsystem.stop(), puncherSubsystem));
+        driverXbox.y().whileTrue(Commands.startEnd(() -> puncherSubsystem.percentOut(0.6), () -> puncherSubsystem.percentOut(0.1), puncherSubsystem));
+        driverXbox.a().whileTrue(Commands.startEnd(() -> puncherSubsystem.percentOut(-1), () -> puncherSubsystem.stop(), puncherSubsystem));
     }
 
     public void elevatorButtonBindings() {
