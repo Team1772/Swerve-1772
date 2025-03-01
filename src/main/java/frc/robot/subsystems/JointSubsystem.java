@@ -37,7 +37,7 @@ public class JointSubsystem extends SubsystemBase {
         JointLeftMotor.setNeutralMode(NeutralMode.Brake);
         JointRightMotor.setNeutralMode(NeutralMode.Brake);
 
-        JointLeftMotor.setInverted(false);
+        JointLeftMotor.setInverted(true);
         JointRightMotor.setInverted(false);
 
         JointRightMotor.follow(JointLeftMotor);

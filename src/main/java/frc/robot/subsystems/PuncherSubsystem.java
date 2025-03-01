@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -13,12 +17,17 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PuncherSubsystem extends SubsystemBase {
     private final TalonFX puncherLeftMotor;
     private final TalonFX puncherRightMotor;
     private final Follower follower;
+
+    private final TalonSRX baixo;
+
+    private final Servo servo;
 
     private final DutyCycleOut percentOutCycle = new DutyCycleOut(0);
     private final PositionDutyCycle positionCycle = new PositionDutyCycle(0);
@@ -27,6 +36,9 @@ public class PuncherSubsystem extends SubsystemBase {
         puncherLeftMotor = new TalonFX(10);
         puncherRightMotor = new TalonFX(11);
         follower = new Follower(10, false);
+
+        servo = new Servo(9);
+        baixo = new TalonSRX(16);
 
         puncherLeftMotor.getConfigurator().apply(new TalonFXConfiguration());
         puncherRightMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -64,7 +76,7 @@ public class PuncherSubsystem extends SubsystemBase {
     }
 
     public void goToPosition(double position) {
-        double clampedPosition = MathUtil.clamp(position, 0, 10);
+        double clampedPosition = MathUtil.clamp(position, 0, 100);
         puncherLeftMotor.setControl(positionCycle.withPosition(clampedPosition));
         puncherRightMotor.setControl(follower);
     }
@@ -77,5 +89,9 @@ public class PuncherSubsystem extends SubsystemBase {
     public void stop() {
         puncherLeftMotor.stopMotor();
         puncherRightMotor.stopMotor();
+    }
+
+    public void setBaixo(double speed) {
+        baixo.set(TalonSRXControlMode.PercentOutput,speed);
     }
 }

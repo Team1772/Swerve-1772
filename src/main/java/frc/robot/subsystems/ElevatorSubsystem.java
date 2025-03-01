@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class ElevatorSubsystem extends SubsystemBase {
-    private final VictorSPX motor;
+    private final TalonSRX motor;
     private final DigitalInput minLimitSwitch;
     private final DigitalInput maxLimitSwitch;
    
@@ -16,7 +18,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private static final double SPEED_DOWN = 0.0;
    
     public ElevatorSubsystem() {
-        motor = new VictorSPX(15);
+        motor = new TalonSRX(15);
         minLimitSwitch = new DigitalInput(0);
         maxLimitSwitch = new DigitalInput(1);
     }
