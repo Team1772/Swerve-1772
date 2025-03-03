@@ -80,4 +80,8 @@ public class RobotContainer {
   public void setMotorBrake(boolean brake) {
     swerveSubsystem.setMotorBrake(brake);
   }
+
+  public void resetEncoders() {
+    puncherSubsystem.resetEncoders();
+  }
 }

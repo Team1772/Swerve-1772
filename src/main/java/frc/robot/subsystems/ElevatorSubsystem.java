@@ -50,4 +50,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public boolean isAtMax() {
         return !maxLimitSwitch.get();
     }
+
+    public void percentOut(double speed) {
+        motor.set(ControlMode.PercentOutput, speed);
+    }
 }

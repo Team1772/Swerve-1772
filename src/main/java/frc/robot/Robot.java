@@ -56,6 +56,8 @@ public class Robot extends TimedRobot {
       disabledTimer.stop();
       disabledTimer.reset();
     }
+
+    m_robotContainer.resetEncoders();
   }
 
   @Override

@@ -1,67 +1,82 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class JointSubsystem extends SubsystemBase {
-    private final TalonSRX JointLeftMotor;
-    private final TalonSRX JointRightMotor;
+    private final TalonSRX jointLeftMotor;
+    private final VictorSPX jointRightMotor;
     private final DutyCycleEncoder absoluteEncoder;
+    //private final PIDController pidController;
 
     private boolean absoluteEncoderConnected;
     private int absoluteEncoderFrequency;
     private double absoluteEncoderOutput;
+    private double absoluteEncoderPosition;
+
     private double relativeEncoderPosition;
 
     public JointSubsystem() {
-        JointLeftMotor = new TalonSRX(13);
-        JointRightMotor = new TalonSRX(14);
+        jointLeftMotor = new TalonSRX(13);
+        jointRightMotor = new VictorSPX(14);
 
         absoluteEncoder = new DutyCycleEncoder(3, 1, 0);
         absoluteEncoder.setAssumedFrequency(975.6);
 
-        JointRightMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-        JointRightMotor.getSensorCollection().setQuadraturePosition(0, 10);
+        jointLeftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+        //jointRightMotor.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition, 0, 10);
 
-        TalonSRXConfiguration configs = new TalonSRXConfiguration();
+        jointLeftMotor.getSensorCollection().setQuadraturePosition((int) Math.round(absoluteEncoder.get()), 0);
 
-        JointLeftMotor.configAllSettings(configs);
-        JointRightMotor.configAllSettings(configs);
+        //pidController = new PIDController(relativeEncoderPosition, absoluteEncoderPosition, absoluteEncoderOutput, absoluteEncoderFrequency);
 
-        JointLeftMotor.setNeutralMode(NeutralMode.Brake);
-        JointRightMotor.setNeutralMode(NeutralMode.Brake);
+        TalonSRXConfiguration masterConfigs = new TalonSRXConfiguration();
+        VictorSPXConfiguration slaveConfigs = new VictorSPXConfiguration();
 
-        JointLeftMotor.setInverted(true);
-        JointRightMotor.setInverted(false);
+        jointLeftMotor.configAllSettings(masterConfigs);
+        jointRightMotor.configAllSettings(slaveConfigs);
 
-        JointRightMotor.follow(JointLeftMotor);
+        jointLeftMotor.setNeutralMode(NeutralMode.Brake);
+        jointRightMotor.setNeutralMode(NeutralMode.Brake);
+
+        jointLeftMotor.setInverted(true);
+        jointRightMotor.setInverted(false);
+
+        jointRightMotor.follow(jointLeftMotor);
     }
 
     public void percentOut(double speed) {
-        JointLeftMotor.set(TalonSRXControlMode.PercentOutput, speed);
+        jointLeftMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void stop() {
-        JointLeftMotor.set(TalonSRXControlMode.PercentOutput, 0);
+        jointLeftMotor.set(ControlMode.PercentOutput, 0);
     }
 
     @Override
     public void periodic() {
         absoluteEncoderConnected = absoluteEncoder.isConnected();
         absoluteEncoderFrequency = absoluteEncoder.getFrequency();
-        absoluteEncoderOutput = absoluteEncoder.get();
+        absoluteEncoderOutput = (((absoluteEncoder.get()*100)-74)*36.7) - 308;
+        //absoluteEncoderOutput = absoluteEncoder.get();
+        absoluteEncoderPosition = jointRightMotor.getSelectedSensorPosition(0);
 
-        relativeEncoderPosition = JointRightMotor.getSelectedSensorPosition(0);
+        relativeEncoderPosition = jointLeftMotor.getSelectedSensorPosition(0)*(-1);
 
         SmartDashboard.putBoolean("Joint Subsystem/Absolute Encoder/Connected", absoluteEncoderConnected);
         SmartDashboard.putNumber("Joint Subsystem/Absolute Encoder/Frequency", absoluteEncoderFrequency);
         SmartDashboard.putNumber("Joint Subsystem/Absolute Encoder/Output", absoluteEncoderOutput);
+        SmartDashboard.putNumber("Joint Subsystem/Absolute Encoder/Position", absoluteEncoderPosition);
 
         SmartDashboard.putNumber("Joint Subsystem/Relative Encoder/Position", relativeEncoderPosition);
     }
