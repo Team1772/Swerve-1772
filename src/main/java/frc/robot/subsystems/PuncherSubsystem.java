@@ -70,6 +70,10 @@ public class PuncherSubsystem extends SubsystemBase {
         return puncherLeftMotor.getPosition().getValueAsDouble();
     }
 
+    public void resetPosition(){
+        puncherLeftMotor.setPosition(null);
+    }
+
     public void goToPosition(double position) {
         double clampedPosition = MathUtil.clamp(position, 0, 100);
         puncherLeftMotor.setControl(positionCycle.withPosition(clampedPosition));
