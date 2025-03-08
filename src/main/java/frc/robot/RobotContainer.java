@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,7 +36,7 @@ public class RobotContainer {
 
   private final DriverButtonBindings driverButtonBindings;
   private final OperatorButtonBindings operatorButtonBindings;
-  SendableChooser<Command> autoChooser;
+  SendableChooser<Command> autonomousChooser;
 
   public RobotContainer() {
     driverXbox = new CommandXboxController(0);
@@ -53,8 +54,8 @@ public class RobotContainer {
     operatorButtonBindings = new OperatorButtonBindings(operatorXbox);
     configureBindings();
 
-    autoChooser = new SendableChooser<Command> ();
-    autoSetup();
+    autonomousChooser = new SendableChooser<Command> ();
+    autonomousChooserSetup();
 
     DriverStation.silenceJoystickConnectionWarning(true);
   }
@@ -65,14 +66,14 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return autonomousChooser.getSelected();
   }
 
-  public void autoSetup() {
-    SmartDashboard.putData(autoChooser);
+  public void autonomousChooserSetup() {
+    Shuffleboard.getTab("Autonomous").add("Choose Autonomous Routine", autonomousChooser);
     
-    autoChooser.setDefaultOption("No auto", new PrintCommand("No Auto Selected"));
-    autoChooser.addOption("Also no auto", new PrintCommand("Also No Auto Selected"));
+    autonomousChooser.setDefaultOption("No auto", new PrintCommand("No Auto Selected"));
+    autonomousChooser.addOption("Also no auto", new PrintCommand("Also No Auto Selected"));
 
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
   }
@@ -81,7 +82,11 @@ public class RobotContainer {
     swerveSubsystem.setMotorBrake(brake);
   }
 
-  public void resetEncoders() {
+  public void resetPuncherSubsystemEncoders() {
     puncherSubsystem.resetEncoders();
+  }
+
+  public void zeroGyro() {
+    swerveSubsystem.zeroGyro();
   }
 }

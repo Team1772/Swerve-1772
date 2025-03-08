@@ -1,8 +1,9 @@
 {
   "imu": {
-    "type": "navx_usb",
+    "type": "adxrs450",
     "id": 0,
     "canbus": null
+    
   },
   "invertedIMU": false,
   "modules": [

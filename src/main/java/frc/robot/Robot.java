@@ -20,6 +20,7 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     instance = this;
+    enableLiveWindowInTest(true);
   }
 
   public static Robot getInstance() {
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    m_robotContainer.resetPuncherSubsystemEncoders();
     m_robotContainer.setMotorBrake(true);
     disabledTimer.reset();
     disabledTimer.start();
@@ -56,8 +58,6 @@ public class Robot extends TimedRobot {
       disabledTimer.stop();
       disabledTimer.reset();
     }
-
-    m_robotContainer.resetEncoders();
   }
 
   @Override
@@ -77,6 +77,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.resetPuncherSubsystemEncoders();
+    m_robotContainer.zeroGyro();
     RobotState.alliance = DriverStation.getAlliance();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
