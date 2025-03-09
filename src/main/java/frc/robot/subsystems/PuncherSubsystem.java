@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotState;
+import frc.robot.Constants;
 
 public class PuncherSubsystem extends SubsystemBase {
     private final TalonFX puncherLeftMotor;
@@ -36,7 +36,8 @@ public class PuncherSubsystem extends SubsystemBase {
     private final PositionDutyCycle positionCycle = new PositionDutyCycle(0);
 
     private GenericEntry setpointValue;
-    private GenericEntry releaseTimeValue;
+    private GenericEntry releaseTimeInValue;
+    private GenericEntry releaseTimeOutValue;
     private GenericEntry releaseDutyCycleValue;
     private GenericEntry tightenDutyCycleValue;
 
@@ -88,11 +89,14 @@ public class PuncherSubsystem extends SubsystemBase {
         masterConfig.apply(currentLimitsConfigs);
         slaveConfig.apply(currentLimitsConfigs);
 
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
         setpointValue = Shuffleboard.getTab("Puncher Subsystem").add("Setpoint", 45)
                                .withWidget(BuiltInWidgets.kTextView).getEntry();
 
-        releaseTimeValue = Shuffleboard.getTab("Puncher Subsystem").add("Release and Tighten: Timer", 1.1)
+        releaseTimeInValue = Shuffleboard.getTab("Puncher Subsystem").add("Release: Timer", 0.3)
+                               .withWidget(BuiltInWidgets.kTextView).getEntry();
+
+        releaseTimeOutValue = Shuffleboard.getTab("Puncher Subsystem").add("Tighten: Timer", 0.3)
                                .withWidget(BuiltInWidgets.kTextView).getEntry();
 
         releaseDutyCycleValue = Shuffleboard.getTab("Puncher Subsystem").add("Release: DutyCycleOut", 0.3)
@@ -160,9 +164,9 @@ public class PuncherSubsystem extends SubsystemBase {
 
     public Command testReleaseCommand() {
         return Commands.startEnd(() -> this.setRelease(-releaseDutyCycleValue.getDouble(0.3)), this::stopRelease, this)
-            .withTimeout(releaseTimeValue.getDouble(1.1)).andThen
+            .withTimeout(releaseTimeInValue.getDouble(0.3)).andThen
                 (Commands.startEnd(() -> this.setRelease(tightenDutyCycleValue.getDouble(0.31)), this::stopRelease, this)
-                .withTimeout(releaseTimeValue.getDouble(1.1)));
+                .withTimeout(releaseTimeOutValue.getDouble(0.3)));
     }
 
     public void debug() {
@@ -171,7 +175,7 @@ public class PuncherSubsystem extends SubsystemBase {
 
    @Override
     public void periodic() {
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
             this.debug();
         }
     }

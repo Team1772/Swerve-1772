@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.Constants.HIDConstants;
 import frc.robot.Robot;
 
@@ -122,14 +123,14 @@ public class DriverButtonBindings {
         swerveAddFakeVisionReadingCommand = Commands.runOnce(this.swerveSubsystem::addFakeVisionReading);
         swerveCenterModulesCommand = this.swerveSubsystem.centerModulesCommand();
 
-        intakeCommand = this.intakeSubsystem.percentOutCommand(() -> -0.3);
-        outtakeCommand = this.intakeSubsystem.percentOutCommand(() -> 0.6);
-        jointAscendCommand = this.jointSubsystem.percentOutCommand(() -> -0.85);
-        jointDescendCommand = this.jointSubsystem.percentOutCommand(() -> 0.7);
-        puncherBuildUpCommand = this.puncherSubsystem.buildUpCommand(() -> 45);
-        puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> 0.3, () -> 0.31, () -> 1.1);
-        elevatorAscendCommand = this.elevatorSubsystem.percentOutCommand(() -> 0.5);
-        elevatorDescendCommand = this.elevatorSubsystem.percentOutCommand(() -> -0.5);
+        intakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.INTAKE);
+        outtakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.OUTTAKE);
+        jointAscendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.ASCEND);
+        jointDescendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.DESCEND);
+        puncherBuildUpCommand = this.puncherSubsystem.buildUpCommand(() -> Constants.PuncherConstants.POSITION);
+        puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> Constants.PuncherConstants.RELEASE, () -> Constants.PuncherConstants.TIGHTEN, () -> Constants.PuncherConstants.TIMER);
+        elevatorAscendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.ASCEND);
+        elevatorDescendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.DESCEND);
 
         testPuncherBuildUpCommand = this.puncherSubsystem.testBuildUpCommand();
         testPuncherReleaseCommand = this.puncherSubsystem.testReleaseCommand();
@@ -142,11 +143,11 @@ public class DriverButtonBindings {
     }
 
     public void configureBindings() {
-        //drivebaseDefaultButtonBindings();
-        //drivebaseSimulationButtonBindings();
-        //drivebaseTestButtonBindings();
+        drivebaseDefaultButtonBindings();
+        drivebaseSimulationButtonBindings();
+        drivebaseTestButtonBindings();
 
-        if(frc.robot.RobotState.debugging) {
+        if(Constants.DEV_MODE) {
             intakeTestButtonBindings();
             jointTestButtonBindings();
             puncherTestButtonBindings();
@@ -161,7 +162,7 @@ public class DriverButtonBindings {
 
     public void drivebaseDefaultButtonBindings() {
         if (!RobotBase.isSimulation()) {
-        swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleCommand);
+        swerveSubsystem.setDefaultCommand(driveRobotOrientedAngularVelocityCommand);
         driverXbox.leftBumper().whileTrue(driveRobotOrientedAngularVelocityCommand);
         }
 
@@ -202,9 +203,8 @@ public class DriverButtonBindings {
     }
 
     public void puncherTestButtonBindings() {
-        driverXbox.rightTrigger().whileTrue(testPuncherBuildUpCommand);
+        driverXbox.leftBumper().whileTrue(testPuncherBuildUpCommand);
         driverXbox.rightBumper().onTrue(testPuncherReleaseCommand);
-        driverXbox.leftBumper().onTrue(testPuncherPrintCommand);
     }
 
     public void elevatorTestButtonBindings() {

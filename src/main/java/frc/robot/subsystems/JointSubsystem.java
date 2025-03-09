@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotState;
+import frc.robot.Constants;
 
 public class JointSubsystem extends SubsystemBase {
     private final WPI_TalonSRX jointLeftMotor;
@@ -89,7 +89,7 @@ public class JointSubsystem extends SubsystemBase {
 
         //jointRightMotor.follow(jointLeftMotor);
 
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
         absoluteEncoderMultiplierValue = Shuffleboard.getTab("Joint Subsystem").add("Absolute Encoder: Multipler", 1)
                      .withWidget(BuiltInWidgets.kTextView).getEntry();
 
@@ -198,7 +198,7 @@ public class JointSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
             this.debug();
         }
     }

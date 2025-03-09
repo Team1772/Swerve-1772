@@ -52,8 +52,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    RobotState.alliance = DriverStation.getAlliance();
-    if (disabledTimer.hasElapsed(Constants.DrivebaseConstants.WHEEL_LOCK_TIME)) {
+    if (disabledTimer.hasElapsed(Constants.SwerveConstants.WHEEL_LOCK_TIME)) {
       m_robotContainer.setMotorBrake(false);
       disabledTimer.stop();
       disabledTimer.reset();
@@ -62,7 +61,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    RobotState.alliance = DriverStation.getAlliance();
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -79,7 +77,6 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     m_robotContainer.resetPuncherSubsystemEncoders();
     m_robotContainer.zeroGyro();
-    RobotState.alliance = DriverStation.getAlliance();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     } else {

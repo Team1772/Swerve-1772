@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotState;
+import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final TalonSRX intakeMotor;
@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.setNeutralMode(NeutralMode.Coast);
         intakeMotor.setInverted(false);
 
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
         intakeDutyCycleValue = Shuffleboard.getTab("Intake Subsystem").add("Intake: DutyCycleOut", 0.3)
                                .withWidget(BuiltInWidgets.kTextView).getEntry();
 
@@ -65,7 +65,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
    @Override
     public void periodic() {
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
             this.debug();
         }
     }

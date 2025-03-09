@@ -9,20 +9,50 @@ import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
 
 public final class Constants {
-  public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+  public static final double ROBOT_MASS = (148 - 20.3) * 0.453592;
   public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
-  public static final double LOOP_TIME = 0.13; //s, 20ms + 110ms sprk max velocity lag
+  public static final double LOOP_TIME = 0.13;
   public static final double MAX_SPEED = Units.feetToMeters(14.5);
-  // Maximum speed of the robot in meters per second, used to limit acceleration.
-
-  public static final class DrivebaseConstants {
-    public static final double WHEEL_LOCK_TIME = 10; // seconds
-  }
+  public static final boolean DEV_MODE = true;
 
   public static class HIDConstants {
     public static final double DEADBAND = 0.1;
     public static final double LEFT_Y_DEADBAND = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT = 6;
+  }
+
+  public static final class SwerveConstants {
+    public static final double WHEEL_LOCK_TIME = 10; // seconds
+  }
+
+  public static class IntakeConstants {
+    public static final int MOTOR_CAN_ID = 10;
+    public static final double INTAKE = 0.3;
+    public static final double OUTTAKE = -0.6;
+  }
+
+  public static class JointConstants {
+    public static final int LEFT_MOTOR_CAN_ID = 13;
+    public static final int RIGHT_MOTOR_CAN_ID = 14;
+    public static final int RIGHT_ENCODER_DIO_PORT = 3;
+    public static final double ASCEND = -0.85;
+    public static final double DESCEND = 0.7;
+  }
+
+  public static class PuncherConstants {
+    public static final int LEFT_MOTOR_CAN_ID = 13;
+    public static final int RIGHT_MOTOR_CAN_ID = 14;
+    public static final double POSITION = 45;
+    public static final double RELEASE = 0.3;
+    public static final double TIGHTEN = 0.31;
+    public static final double TIMER = 1.1;
+  }
+
+  public static class ElevatorConstants {
+    public static final int MOTOR_CAN_ID = 16;
+    public static final int LIMIT_SWITCH_DIO_PORT = 0;
+    public static final double ASCEND = -0.3;
+    public static final double DESCEND = 0.3;
   }
 }

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotState;
+import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import java.util.function.DoubleSupplier;
@@ -25,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         motor = new TalonSRX(15);
         minLimitSwitch = new DigitalInput(0);
 
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
         ascendDutyCycleOutValue = Shuffleboard.getTab("Elevator Subsystem").add("Ascend: DutyCycleOut", 0)
                                   .withWidget(BuiltInWidgets.kTextView).getEntry();
 
@@ -68,7 +68,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
    @Override
     public void periodic() {
-        if(RobotState.debugging) {
+        if(Constants.DEV_MODE) {
             this.debug();
         }
     }
