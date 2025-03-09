@@ -164,9 +164,9 @@ public class PuncherSubsystem extends SubsystemBase {
 
     public Command testReleaseCommand() {
         return Commands.startEnd(() -> this.setRelease(-releaseDutyCycleValue.getDouble(0.3)), this::stopRelease, this)
-            .withTimeout(releaseTimeInValue.getDouble(0.3)).andThen
+            .withTimeout(0.2).andThen
                 (Commands.startEnd(() -> this.setRelease(tightenDutyCycleValue.getDouble(0.31)), this::stopRelease, this)
-                .withTimeout(releaseTimeOutValue.getDouble(0.3)));
+                .withTimeout(0.2));
     }
 
     public void debug() {
