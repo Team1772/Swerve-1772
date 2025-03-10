@@ -208,8 +208,8 @@ public class DriverButtonBindings {
     }
 
     public void elevatorTestButtonBindings() {
-        driverXbox.x().whileTrue(testElevatorAscendCommand);
-        driverXbox.b().whileTrue(testElevatorDescendCommand);
+        driverXbox.povUp().whileTrue(testElevatorAscendCommand);
+        driverXbox.povDown().whileTrue(testElevatorDescendCommand);
     }
 
     public void intakeButtonBindings() {
