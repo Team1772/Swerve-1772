@@ -84,6 +84,7 @@ public class RobotContainer {
 
   public void resetPuncherSubsystemEncoders() {
     puncherSubsystem.resetEncoders();
+    puncherSubsystem.resetState();
   }
 
   public void zeroGyro() {

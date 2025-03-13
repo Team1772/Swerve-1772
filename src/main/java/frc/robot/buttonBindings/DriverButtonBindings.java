@@ -5,8 +5,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.HIDConstants;
@@ -49,12 +51,16 @@ public class DriverButtonBindings {
 
     private final Command intakeCommand;
     private final Command outtakeCommand;
+    private final Command intakeStopCommand;
     private final Command jointAscendCommand;
     private final Command jointDescendCommand;
     private final Command puncherBuildUpCommand;
     private final Command puncherReleaseCommand;
     private final Command elevatorAscendCommand;
     private final Command elevatorDescendCommand;
+    private final Command driverFeedbackCommand;
+
+    private final ConditionalCommand puncherConditionalCommand;
 
     private final Command testPuncherBuildUpCommand;
     private final Command testPuncherReleaseCommand;
@@ -125,12 +131,16 @@ public class DriverButtonBindings {
 
         intakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.INTAKE);
         outtakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.OUTTAKE);
+        intakeStopCommand = this.intakeSubsystem.percentOutCommand(() -> 0);
         jointAscendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.ASCEND);
         jointDescendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.DESCEND);
         puncherBuildUpCommand = this.puncherSubsystem.buildUpCommand(() -> Constants.PuncherConstants.POSITION);
         puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> Constants.PuncherConstants.RELEASE, () -> Constants.PuncherConstants.TIGHTEN);
         elevatorAscendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.ASCEND);
         elevatorDescendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.DESCEND);
+
+        driverFeedbackCommand = Commands.startEnd(() -> this.driverXbox.setRumble(RumbleType.kBothRumble, 1), () -> this.driverXbox.setRumble(RumbleType.kBothRumble, 0), puncherSubsystem).withTimeout(2);
+        puncherConditionalCommand = new ConditionalCommand(puncherBuildUpCommand, driverFeedbackCommand, () -> jointSubsystem.isSafeBuildUpAngle() && !puncherSubsystem.isPuncherReady());
 
         testPuncherBuildUpCommand = this.puncherSubsystem.testBuildUpCommand();
         testPuncherReleaseCommand = this.puncherSubsystem.testReleaseCommand();
@@ -163,7 +173,6 @@ public class DriverButtonBindings {
     public void drivebaseDefaultButtonBindings() {
         if (!RobotBase.isSimulation()) {
         swerveSubsystem.setDefaultCommand(driveRobotOrientedAngularVelocityCommand);
-        driverXbox.leftBumper().whileTrue(driveRobotOrientedAngularVelocityCommand);
         }
 
         if (!DriverStation.isTest()) {
@@ -203,7 +212,7 @@ public class DriverButtonBindings {
     }
 
     public void puncherTestButtonBindings() {
-        driverXbox.leftBumper().whileTrue(testPuncherBuildUpCommand);
+        driverXbox.leftBumper().onTrue(puncherConditionalCommand);
         driverXbox.rightBumper().onTrue(testPuncherReleaseCommand);
     }
 
@@ -214,7 +223,8 @@ public class DriverButtonBindings {
 
     public void intakeButtonBindings() {
         driverXbox.y().whileTrue(intakeCommand);
-        driverXbox.x().whileTrue(outtakeCommand); 
+        driverXbox.x().whileTrue(outtakeCommand);
+        driverXbox.b().whileTrue(intakeStopCommand);
     }
 
     public void jointButtonBindings() {

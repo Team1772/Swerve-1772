@@ -48,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command percentOutCommand(DoubleSupplier speed) {
-        return Commands.startEnd(() -> this.percentOut(speed.getAsDouble()), this::stop, this);
+        return Commands.startEnd(this::stop, () -> this.percentOut(speed.getAsDouble()), this);
     }
 
     public Command testIntakeCommand() {

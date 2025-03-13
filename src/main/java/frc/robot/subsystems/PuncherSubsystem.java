@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,10 +34,11 @@ public class PuncherSubsystem extends SubsystemBase {
     private final Follower follower;
 
     private final TalonSRX puncherReleaseMotor;
-    private final DigitalInput puncherReleaseFeedback;
+    private final Encoder puncherReleaseFeedback;
 
     private final DutyCycleOut percentOutCycle = new DutyCycleOut(0);
     private final PositionDutyCycle positionCycle = new PositionDutyCycle(0);
+    private boolean isPuncherReady = false;
 
     private GenericEntry setpointValue;
     private GenericEntry releaseTimeInValue;
@@ -49,7 +51,7 @@ public class PuncherSubsystem extends SubsystemBase {
         puncherRightMotor = new TalonFX(Constants.PuncherConstants.RIGHT_MOTOR_CAN_ID);
         follower = new Follower(Constants.PuncherConstants.LEFT_MOTOR_CAN_ID, false);
         puncherReleaseMotor = new TalonSRX(Constants.PuncherConstants.RELEASE_MOTOR_CAN_ID);
-        puncherReleaseFeedback = new DigitalInput(Constants.PuncherConstants.SENSOR_DIO_PORT);
+        puncherReleaseFeedback = new Encoder(Constants.PuncherConstants.ENCODER_DIO_PORT_A, Constants.PuncherConstants.ENCODER_DIO_PORT_B);
 
         puncherLeftMotor.setPosition(0);
         puncherRightMotor.setPosition(0);
@@ -93,6 +95,8 @@ public class PuncherSubsystem extends SubsystemBase {
         masterConfig.apply(currentLimitsConfigs);
         slaveConfig.apply(currentLimitsConfigs);
 
+        puncherReleaseFeedback.reset();
+
         if(Constants.DEV_MODE) {
         setpointValue = Shuffleboard.getTab("Puncher Subsystem").add("Setpoint", 45)
                                .withWidget(BuiltInWidgets.kTextView).getEntry();
@@ -109,6 +113,14 @@ public class PuncherSubsystem extends SubsystemBase {
         tightenDutyCycleValue = Shuffleboard.getTab("Puncher Subsystem").add("Tighten: DutyCycleOut", 0.31)
                                .withWidget(BuiltInWidgets.kTextView).getEntry();
         }
+    }
+
+    public boolean isPuncherReady() {
+        return isPuncherReady;
+    }
+
+    public void setIsPuncherReady(boolean isPuncherReady) {
+        this.isPuncherReady = isPuncherReady;
     }
 
     public double getPosition() {
@@ -148,14 +160,16 @@ public class PuncherSubsystem extends SubsystemBase {
     }
 
     public Command buildUpCommand(DoubleSupplier position) {
-        return Commands.startEnd(() -> this.goToPosition(position.getAsDouble()), () -> this.goToPosition(0), this);
+        return Commands.startEnd(() -> this.goToPosition(position.getAsDouble()), () -> {this.goToPosition(0);
+        this.setIsPuncherReady(true);}, this).until(() -> puncherLeftMotor.getPosition().getValueAsDouble() > 20);
     }
 
     public Command releaseCommand(DoubleSupplier speed1, DoubleSupplier speed2) {
         return Commands.startEnd(() -> this.setRelease(-speed1.getAsDouble()), this::stopRelease, this)
-                        .until(puncherReleaseFeedback::get).andThen
-                            (Commands.startEnd(() -> this.setRelease(speed2.getAsDouble()), this::stopRelease, this)
-                            .until(puncherReleaseFeedback::get));
+                        .until(() -> puncherReleaseFeedback.get() == 500).andThen
+                            (Commands.startEnd(() -> this.setRelease(speed2.getAsDouble()), () -> {this.stopRelease();
+                                this.setIsPuncherReady(false);}, this)
+                            .until(() -> puncherReleaseFeedback.get() == 0));
     }
 
     public Command testPrintCommand() {
@@ -163,20 +177,26 @@ public class PuncherSubsystem extends SubsystemBase {
     }
 
     public Command testBuildUpCommand() {
-        return Commands.startEnd(() -> this.goToPosition(setpointValue.getDouble(45)), () -> this.goToPosition(0), this);
+        return Commands.startEnd(() -> this.goToPosition(setpointValue.getDouble(45)), () -> {this.goToPosition(0);
+            this.setIsPuncherReady(true);}, this).until(() -> puncherLeftMotor.getPosition().getValueAsDouble() > 20);
     }
 
     public Command testReleaseCommand() {
         return Commands.startEnd(() -> this.setRelease(-releaseDutyCycleValue.getDouble(0.3)), this::stopRelease, this)
-            .until(puncherReleaseFeedback::get).andThen
-                (Commands.startEnd(() -> this.setRelease(tightenDutyCycleValue.getDouble(0.31)), this::stopRelease, this)
-                .until(() -> !puncherReleaseFeedback.get())).andThen
-                (Commands.startEnd(() -> this.setRelease(tightenDutyCycleValue.getDouble(0.31)), this::stopRelease, this))
-                .until(puncherReleaseFeedback::get);
+            .until(() -> puncherReleaseFeedback.get() == 500).andThen
+                (Commands.startEnd(() -> this.setRelease(tightenDutyCycleValue.getDouble(0.31)), () -> {this.stopRelease();
+                    this.setIsPuncherReady(false);}, this)
+                .until(() -> puncherReleaseFeedback.get() == 0));
+    }
+
+    public void resetState() {
+        this.setIsPuncherReady(false);
     }
 
     public void debug() {
-        SmartDashboard.putBoolean("Puncher Subsystem/Release/Feedback", puncherReleaseFeedback.get());
+        SmartDashboard.putNumber("Puncher Subsystem/Release/Feedback", puncherReleaseFeedback.get());
+        SmartDashboard.putBoolean("Puncher Subsystem/State", isPuncherReady());
+        SmartDashboard.putNumber("Puncher Subsystem/Motor", puncherLeftMotor.getPosition().getValueAsDouble());
     }
 
    @Override

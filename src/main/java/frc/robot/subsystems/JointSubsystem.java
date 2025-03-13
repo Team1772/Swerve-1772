@@ -170,6 +170,18 @@ public class JointSubsystem extends SubsystemBase {
         slaveController.setPID(slaveControllerProportionalValue.getDouble(0), slaveControllerIntegralValue.getDouble(0), slaveControllerDerivativeValue.getDouble(0));
     }
 
+    public boolean isSafeBuildUpAngle() {
+        return absoluteEncoderAdjusted < 60;
+    }
+
+    public boolean isAngleLower() {
+        return absoluteEncoderAdjusted < 70;
+    }
+
+    public boolean isAngleHigher() {
+        return absoluteEncoderAdjusted > 60;
+    }
+
     public Command testOpenLoopCommand() {
         return this.runEnd(() -> this.percentOut(dutyCycleOutValue.getDouble(0)), this::stop);
     }

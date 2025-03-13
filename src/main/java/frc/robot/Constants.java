@@ -44,7 +44,8 @@ public final class Constants {
     public static final int LEFT_MOTOR_CAN_ID = 10;
     public static final int RIGHT_MOTOR_CAN_ID = 11;
     public static final int RELEASE_MOTOR_CAN_ID = 16;
-    public static final int SENSOR_DIO_PORT = 4;
+    public static final int ENCODER_DIO_PORT_A = 4;
+    public static final int ENCODER_DIO_PORT_B = 5;
     public static final double POSITION = 45;
     public static final double RELEASE = 0.3;
     public static final double TIGHTEN = 0.31;

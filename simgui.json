@@ -1,5 +1,10 @@
 {
   "HALProvider": {
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "SPARK MAX [1] RELATIVE ENCODER": {
         "header": {
@@ -80,10 +85,28 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/SwerveSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[3]": "Digital Input",
+      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [13]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (v6) [11]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [13]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Victor SPX [14]": "Motor Controller",
+      "/Shuffleboard/Autonomous/Choose Autonomous Routine": "String Chooser",
       "/Shuffleboard/Joint Subsystem/Closed Loop Command": "Command",
+      "/Shuffleboard/Joint Subsystem/Update Controllers Parameters Command": "Command",
+      "/SmartDashboard/ADXRS450_Gyro[0]": "Gyro",
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
@@ -143,15 +166,6 @@
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
-    "Retained Values": {
-      "open": false
-    },
-    "Transitory Values": {
-      "open": false
-    },
     "retained": {
       "Shuffleboard": {
         "Main": {
@@ -165,13 +179,13 @@
         "open": true
       },
       "SmartDashboard": {
-        "Field": {
+        "Joint Subsystem": {
+          "Absolute Encoder": {
+            "open": true
+          },
           "open": true
         },
-        "open": true,
-        "swerve": {
-          "open": true
-        }
+        "open": true
       }
     }
   },
