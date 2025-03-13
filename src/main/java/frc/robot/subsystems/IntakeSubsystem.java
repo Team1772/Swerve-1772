@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private GenericEntry outtakeDutyCycleValue;
     
     public IntakeSubsystem() {
-        intakeMotor = new TalonSRX(12);
+        intakeMotor = new TalonSRX(Constants.IntakeConstants.MOTOR_CAN_ID);
 
         TalonSRXConfiguration configs = new TalonSRXConfiguration();
 

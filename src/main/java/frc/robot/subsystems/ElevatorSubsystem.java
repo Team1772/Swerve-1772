@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,8 +23,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private GenericEntry descendDutyCycleOutValue;
    
     public ElevatorSubsystem() {
-        motor = new TalonSRX(15);
-        minLimitSwitch = new DigitalInput(0);
+        motor = new TalonSRX(Constants.ElevatorConstants.MOTOR_CAN_ID);
+        minLimitSwitch = new DigitalInput(Constants.ElevatorConstants.LIMIT_SWITCH_DIO_PORT);
 
         if(Constants.DEV_MODE) {
         ascendDutyCycleOutValue = Shuffleboard.getTab("Elevator Subsystem").add("Ascend: DutyCycleOut", 0)
@@ -63,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void debug() {
-        
+        SmartDashboard.putBoolean("Elevator Subsystem/Limit Switch", minLimitSwitch.get());
     }
 
    @Override

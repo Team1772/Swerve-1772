@@ -128,7 +128,7 @@ public class DriverButtonBindings {
         jointAscendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.ASCEND);
         jointDescendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.DESCEND);
         puncherBuildUpCommand = this.puncherSubsystem.buildUpCommand(() -> Constants.PuncherConstants.POSITION);
-        puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> Constants.PuncherConstants.RELEASE, () -> Constants.PuncherConstants.TIGHTEN, () -> Constants.PuncherConstants.TIMER);
+        puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> Constants.PuncherConstants.RELEASE, () -> Constants.PuncherConstants.TIGHTEN);
         elevatorAscendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.ASCEND);
         elevatorDescendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.DESCEND);
 

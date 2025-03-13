@@ -27,7 +27,7 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int MOTOR_CAN_ID = 10;
+    public static final int MOTOR_CAN_ID = 12;
     public static final double INTAKE = 0.3;
     public static final double OUTTAKE = -0.6;
   }
@@ -41,16 +41,17 @@ public final class Constants {
   }
 
   public static class PuncherConstants {
-    public static final int LEFT_MOTOR_CAN_ID = 13;
-    public static final int RIGHT_MOTOR_CAN_ID = 14;
+    public static final int LEFT_MOTOR_CAN_ID = 10;
+    public static final int RIGHT_MOTOR_CAN_ID = 11;
+    public static final int RELEASE_MOTOR_CAN_ID = 16;
+    public static final int SENSOR_DIO_PORT = 4;
     public static final double POSITION = 45;
     public static final double RELEASE = 0.3;
     public static final double TIGHTEN = 0.31;
-    public static final double TIMER = 1.1;
   }
 
   public static class ElevatorConstants {
-    public static final int MOTOR_CAN_ID = 16;
+    public static final int MOTOR_CAN_ID = 15;
     public static final int LIMIT_SWITCH_DIO_PORT = 0;
     public static final double ASCEND = -0.3;
     public static final double DESCEND = 0.3;

@@ -17,8 +17,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,6 +33,7 @@ public class PuncherSubsystem extends SubsystemBase {
     private final Follower follower;
 
     private final TalonSRX puncherReleaseMotor;
+    private final DigitalInput puncherReleaseFeedback;
 
     private final DutyCycleOut percentOutCycle = new DutyCycleOut(0);
     private final PositionDutyCycle positionCycle = new PositionDutyCycle(0);
@@ -42,10 +45,11 @@ public class PuncherSubsystem extends SubsystemBase {
     private GenericEntry tightenDutyCycleValue;
 
     public PuncherSubsystem() {
-        puncherLeftMotor = new TalonFX(10);
-        puncherRightMotor = new TalonFX(11);
-        follower = new Follower(10, false);
-        puncherReleaseMotor = new TalonSRX(16);
+        puncherLeftMotor = new TalonFX(Constants.PuncherConstants.LEFT_MOTOR_CAN_ID);
+        puncherRightMotor = new TalonFX(Constants.PuncherConstants.RIGHT_MOTOR_CAN_ID);
+        follower = new Follower(Constants.PuncherConstants.LEFT_MOTOR_CAN_ID, false);
+        puncherReleaseMotor = new TalonSRX(Constants.PuncherConstants.RELEASE_MOTOR_CAN_ID);
+        puncherReleaseFeedback = new DigitalInput(Constants.PuncherConstants.SENSOR_DIO_PORT);
 
         puncherLeftMotor.setPosition(0);
         puncherRightMotor.setPosition(0);
@@ -147,11 +151,11 @@ public class PuncherSubsystem extends SubsystemBase {
         return Commands.startEnd(() -> this.goToPosition(position.getAsDouble()), () -> this.goToPosition(0), this);
     }
 
-    public Command releaseCommand(DoubleSupplier speed1, DoubleSupplier speed2, DoubleSupplier time) {
+    public Command releaseCommand(DoubleSupplier speed1, DoubleSupplier speed2) {
         return Commands.startEnd(() -> this.setRelease(-speed1.getAsDouble()), this::stopRelease, this)
-                        .withTimeout(time.getAsDouble()).andThen
+                        .until(puncherReleaseFeedback::get).andThen
                             (Commands.startEnd(() -> this.setRelease(speed2.getAsDouble()), this::stopRelease, this)
-                            .withTimeout(time.getAsDouble()));
+                            .until(puncherReleaseFeedback::get));
     }
 
     public Command testPrintCommand() {
@@ -164,13 +168,15 @@ public class PuncherSubsystem extends SubsystemBase {
 
     public Command testReleaseCommand() {
         return Commands.startEnd(() -> this.setRelease(-releaseDutyCycleValue.getDouble(0.3)), this::stopRelease, this)
-            .withTimeout(0.2).andThen
+            .until(puncherReleaseFeedback::get).andThen
                 (Commands.startEnd(() -> this.setRelease(tightenDutyCycleValue.getDouble(0.31)), this::stopRelease, this)
-                .withTimeout(0.2));
+                .until(() -> !puncherReleaseFeedback.get())).andThen
+                (Commands.startEnd(() -> this.setRelease(tightenDutyCycleValue.getDouble(0.31)), this::stopRelease, this))
+                .until(puncherReleaseFeedback::get);
     }
 
     public void debug() {
-
+        SmartDashboard.putBoolean("Puncher Subsystem/Release/Feedback", puncherReleaseFeedback.get());
     }
 
    @Override

@@ -58,10 +58,10 @@ public class JointSubsystem extends SubsystemBase {
     private GenericEntry dutyCycleOutValue;
 
     public JointSubsystem() {
-        jointLeftMotor = new WPI_TalonSRX(13);
-        jointRightMotor = new WPI_VictorSPX(14);
+        jointLeftMotor = new WPI_TalonSRX(Constants.JointConstants.LEFT_MOTOR_CAN_ID);
+        jointRightMotor = new WPI_VictorSPX(Constants.JointConstants.RIGHT_MOTOR_CAN_ID);
 
-        absoluteEncoder = new DutyCycleEncoder(3, 100, 0);
+        absoluteEncoder = new DutyCycleEncoder(Constants.JointConstants.RIGHT_ENCODER_DIO_PORT, 100, 0);
         absoluteEncoder.setAssumedFrequency(975.6);
 
         //jointLeftMotor.getSensorCollection().setQuadraturePosition((int) Math.round(absoluteEncoder.get()), 0);
