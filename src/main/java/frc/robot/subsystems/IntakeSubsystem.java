@@ -52,11 +52,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command testIntakeCommand() {
-        return Commands.startEnd(() -> this.percentOut(-intakeDutyCycleValue.getDouble(0.3)), this::stop, this);
+        return Commands.startEnd(this::stop,() -> this.percentOut(-intakeDutyCycleValue.getDouble(0.3)), this);
     }
 
     public Command testOuttakeCommand() {
-        return Commands.startEnd(() -> this.percentOut(outtakeDutyCycleValue.getDouble(0.6)), this::stop, this);
+        return Commands.startEnd(this::stop, () -> this.percentOut(outtakeDutyCycleValue.getDouble(0.6)), this);
     }
 
     public void debug() {

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -14,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class ElevatorSubsystem extends SubsystemBase {
     private final TalonSRX motor;
@@ -24,6 +26,8 @@ public class ElevatorSubsystem extends SubsystemBase {
    
     public ElevatorSubsystem() {
         motor = new TalonSRX(Constants.ElevatorConstants.MOTOR_CAN_ID);
+        motor.setNeutralMode(NeutralMode.Brake);
+
         minLimitSwitch = new DigitalInput(Constants.ElevatorConstants.LIMIT_SWITCH_DIO_PORT);
 
         if(Constants.DEV_MODE) {
@@ -52,7 +56,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Command descendCommand() {
-        return Commands.startEnd(() -> this.percentOut(-1), this::stop, this).until(this::isAtMin);
+        return new ConditionalCommand(percentOutCommand(() -> -1), percentOutCommand(() -> 0), () -> !this.isAtMin());
     }
 
     public Command testDescendCommand() {

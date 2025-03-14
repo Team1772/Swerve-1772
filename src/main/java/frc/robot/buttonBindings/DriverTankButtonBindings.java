@@ -19,35 +19,19 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JointSubsystem;
 import frc.robot.subsystems.PuncherSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervetank.Drivetrain;
 import swervelib.SwerveInputStream;
 
-public class DriverButtonBindings {
+public class DriverTankButtonBindings {
     private final CommandXboxController driverXbox;
 
-    private final SwerveSubsystem swerveSubsystem;
+    private final Drivetrain drivetrain;
     private final IntakeSubsystem intakeSubsystem;
     private final JointSubsystem jointSubsystem;
     private final PuncherSubsystem puncherSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
 
-    private final SwerveInputStream driveDirectAngleSwerveInputStream;
-    private final SwerveInputStream driveRobotOrientedSwerveInputStream;
-    private final SwerveInputStream driveAngularVelocityKeyboardSwerveInputStream;
-    private final SwerveInputStream driveDirectAngleKeyboardSwerveInputStream;
-    private final SwerveInputStream driveAngularVelocitySwerveInputStream;
-
-    private final Command driveFieldOrientedDirectAngleCommand;
-    private final Command driveFieldOrientedAngularVelocityCommand;
-    private final Command driveRobotOrientedAngularVelocityCommand;
-    private final Command driveSetpointGenCommand;
-    private final Command driveFieldOrientedDirectAngleKeyboardCommand;
-    private final Command driveFieldOrientedAngularVelocityKeyboardCommand;
-    private final Command driveSetpointGenKeyboardCommand;
-
-    private final Command swerveZeroGyroCommand;
-    private final Command swerveLockPoseCommand;
-    private final Command swerveAddFakeVisionReadingCommand;
-    private final Command swerveCenterModulesCommand;
+    private final Command driveCommand;
 
     private final Command intakeCommand;
     private final Command outtakeCommand;
@@ -72,62 +56,17 @@ public class DriverButtonBindings {
     private final Command testJointCommand;
     
 
-    public DriverButtonBindings(CommandXboxController driverXbox, SwerveSubsystem swerveSubsystem, 
+    public DriverTankButtonBindings(CommandXboxController driverXbox, Drivetrain drivetrain, 
                                 IntakeSubsystem intakeSubsystem, JointSubsystem jointSubsystem, PuncherSubsystem puncherSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.driverXbox = driverXbox;
 
-        this.swerveSubsystem = swerveSubsystem;
+        this.drivetrain = drivetrain;
         this.intakeSubsystem = intakeSubsystem;
         this.jointSubsystem = jointSubsystem;
         this.puncherSubsystem = puncherSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
 
-        driveAngularVelocitySwerveInputStream = SwerveInputStream.of(this.swerveSubsystem.getSwerveDrive(),
-            () -> this.driverXbox.getLeftY() * 1,
-            () -> this.driverXbox.getLeftX() * 1)
-            .withControllerRotationAxis(() -> {
-                double leftTrigger = this.driverXbox.getLeftTriggerAxis();  
-                double rightTrigger = this.driverXbox.getRightTriggerAxis(); 
-                double rotation = rightTrigger - leftTrigger;
-                return rotation;
-            })
-            .deadband(HIDConstants.DEADBAND)
-            .scaleTranslation(0.8)
-            .allianceRelativeControl(true);
-
-        driveDirectAngleSwerveInputStream = driveAngularVelocitySwerveInputStream.copy().withControllerHeadingAxis
-            (this.driverXbox::getRightX, this.driverXbox::getRightY).headingWhile(true);
-
-        driveRobotOrientedSwerveInputStream = driveAngularVelocitySwerveInputStream.copy().robotRelative(true)
-            .allianceRelativeControl(false);
-
-        driveAngularVelocityKeyboardSwerveInputStream = SwerveInputStream.of(this.swerveSubsystem.getSwerveDrive(),
-            () -> -this.driverXbox.getLeftY(),
-            () -> -this.driverXbox.getLeftX())
-            .withControllerRotationAxis(() -> this.driverXbox.getRawAxis(
-                2))
-            .deadband(HIDConstants.DEADBAND)
-            .scaleTranslation(0.8)
-            .allianceRelativeControl(true);
-
-        driveDirectAngleKeyboardSwerveInputStream = driveAngularVelocityKeyboardSwerveInputStream.copy()
-            .withControllerHeadingAxis(() -> Math.sin(
-            this.driverXbox.getRawAxis(2) * Math.PI) * (Math.PI * 2),
-            () -> Math.cos(this.driverXbox.getRawAxis(2) * Math.PI) * (Math.PI * 2))
-            .headingWhile(true);
-
-        driveFieldOrientedDirectAngleCommand = this.swerveSubsystem.driveFieldOriented(driveDirectAngleSwerveInputStream);
-        driveFieldOrientedAngularVelocityCommand = this.swerveSubsystem.driveFieldOriented(driveAngularVelocitySwerveInputStream);
-        driveRobotOrientedAngularVelocityCommand = this.swerveSubsystem.driveFieldOriented(driveRobotOrientedSwerveInputStream);
-        driveSetpointGenCommand = this.swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSwerveInputStream);
-        driveFieldOrientedDirectAngleKeyboardCommand = this.swerveSubsystem.driveFieldOriented(driveDirectAngleKeyboardSwerveInputStream);
-        driveFieldOrientedAngularVelocityKeyboardCommand = this.swerveSubsystem.driveFieldOriented(driveAngularVelocityKeyboardSwerveInputStream);
-        driveSetpointGenKeyboardCommand = this.swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngleKeyboardSwerveInputStream);
-
-        swerveZeroGyroCommand = Commands.runOnce(this.swerveSubsystem::zeroGyro);
-        swerveLockPoseCommand = Commands.runOnce(this.swerveSubsystem::lock, this.swerveSubsystem).repeatedly();
-        swerveAddFakeVisionReadingCommand = Commands.runOnce(this.swerveSubsystem::addFakeVisionReading);
-        swerveCenterModulesCommand = this.swerveSubsystem.centerModulesCommand();
+        driveCommand = this.drivetrain.drive(this.driverXbox::getLeftY, () -> this.driverXbox.getRightX());
 
         intakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.INTAKE);
         outtakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.OUTTAKE);
@@ -138,6 +77,8 @@ public class DriverButtonBindings {
         puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> Constants.PuncherConstants.RELEASE, () -> Constants.PuncherConstants.TIGHTEN);
         elevatorAscendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.ASCEND);
         elevatorDescendCommand = this.elevatorSubsystem.descendCommand();
+
+        
 
         driverFeedbackCommand = Commands.startEnd(() -> this.driverXbox.setRumble(RumbleType.kBothRumble, 1), () -> this.driverXbox.setRumble(RumbleType.kBothRumble, 0), puncherSubsystem).withTimeout(2);
         //puncherConditionalCommand = new ConditionalCommand(puncherBuildUpCommand, driverFeedbackCommand, () -> jointSubsystem.isSafeBuildUpAngle() && !puncherSubsystem.isPuncherReady());
@@ -153,9 +94,7 @@ public class DriverButtonBindings {
     }
 
     public void configureBindings() {
-        drivebaseDefaultButtonBindings();
-        drivebaseSimulationButtonBindings();
-        drivebaseTestButtonBindings();
+        drivebaseButtonBindings();
 
         if(Constants.DEV_MODE) {
             intakeTestButtonBindings();
@@ -170,36 +109,8 @@ public class DriverButtonBindings {
         }
     }
 
-    public void drivebaseDefaultButtonBindings() {
-        if (!RobotBase.isSimulation()) {
-        swerveSubsystem.setDefaultCommand(driveRobotOrientedAngularVelocityCommand);
-        }
-
-        if (!DriverStation.isTest()) {
-        driverXbox.start().onTrue(swerveZeroGyroCommand);
-        driverXbox.leftStick().whileTrue(swerveLockPoseCommand);
-        }
-    }
-
-    public void drivebaseSimulationButtonBindings() {
-        if (RobotBase.isSimulation()) {
-        swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboardCommand);
-        } 
-
-        if (Robot.isSimulation()) {
-        driverXbox.start().onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-        driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
-        }
-    }
-
-    public void drivebaseTestButtonBindings() {
-        if (DriverStation.isTest()) {
-        swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
-        driverXbox.x().whileTrue(swerveLockPoseCommand);
-        driverXbox.start().onTrue(swerveZeroGyroCommand);
-        driverXbox.back().whileTrue(swerveCenterModulesCommand);
-        driverXbox.x().onTrue(swerveAddFakeVisionReadingCommand);
-        }
+    public void drivebaseButtonBindings() {
+        drivetrain.setDefaultCommand(driveCommand);
     }
 
     public void intakeTestButtonBindings() {

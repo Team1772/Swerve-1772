@@ -13,14 +13,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.buttonBindings.DriverButtonBindings;
+import frc.robot.buttonBindings.DriverTankButtonBindings;
 import frc.robot.buttonBindings.OperatorButtonBindings;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.JointSubsystem;
 import frc.robot.subsystems.PuncherSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervetank.Drivetrain;
 
 import java.io.File;
 
@@ -29,12 +32,16 @@ public class RobotContainer {
   private final CommandXboxController operatorXbox;
 
   private final SwerveSubsystem swerveSubsystem;
+  //private final Drivetrain swerveSubsystem;
+
   private final IntakeSubsystem intakeSubsystem;
   private final PuncherSubsystem puncherSubsystem;
   private final JointSubsystem jointSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
 
   private final DriverButtonBindings driverButtonBindings;
+  //private final DriverTankButtonBindings driverButtonBindings;
+
   private final OperatorButtonBindings operatorButtonBindings;
   SendableChooser<Command> autonomousChooser;
 
@@ -43,14 +50,15 @@ public class RobotContainer {
     operatorXbox = new CommandXboxController(1);
 
     swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
+    //swerveSubsystem = new Drivetrain();
     intakeSubsystem = new IntakeSubsystem();
     puncherSubsystem = new PuncherSubsystem();
     jointSubsystem = new JointSubsystem();
     elevatorSubsystem = new ElevatorSubsystem();
     
+    driverButtonBindings = new DriverButtonBindings(driverXbox, swerveSubsystem, intakeSubsystem, jointSubsystem, puncherSubsystem, elevatorSubsystem);
+    //driverButtonBindings = new DriverTankButtonBindings(driverXbox, swerveSubsystem, intakeSubsystem, jointSubsystem, puncherSubsystem, elevatorSubsystem);
 
-    driverButtonBindings = new DriverButtonBindings(driverXbox, swerveSubsystem, intakeSubsystem, 
-                                                    jointSubsystem, puncherSubsystem, elevatorSubsystem);
     operatorButtonBindings = new OperatorButtonBindings(operatorXbox);
     configureBindings();
 
@@ -66,7 +74,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autonomousChooser.getSelected();
+    //return swerveSubsystem.autonomousCommand();
+    return null; //autonomousChooser.getSelected();
   }
 
   public void autonomousChooserSetup() {

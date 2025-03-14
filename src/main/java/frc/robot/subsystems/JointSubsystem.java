@@ -78,9 +78,6 @@ public class JointSubsystem extends SubsystemBase {
         jointLeftMotor.configAllSettings(masterConfigs);
         jointRightMotor.configAllSettings(slaveConfigs);
 
-        jointLeftMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
-        jointLeftMotor.configSelectedFeedbackSensor(FeedbackDevice.None, 1, 0);
-
         jointLeftMotor.setNeutralMode(NeutralMode.Brake);
         jointRightMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -195,17 +192,11 @@ public class JointSubsystem extends SubsystemBase {
         absoluteEncoderFrequency = absoluteEncoder.getFrequency();
         absoluteEncoderAdjusted = ((absoluteEncoder.get()) + absoluteEncoderOffsetValue.getDouble(0))*(absoluteEncoderMultiplierValue.getDouble(1));
         absoluteEncoderRaw = (absoluteEncoder.get());
-        analogEncoderAdjusted = (jointLeftMotor.getSelectedSensorPosition(0) + analogEncoderOffsetValue.getDouble(0))*(analogEncoderMultiplierValue.getDouble(1));
-        analogEncoderRaw = jointLeftMotor.getSelectedSensorPosition(0);
 
         SmartDashboard.putBoolean("Joint Subsystem/Absolute Encoder/Connected", absoluteEncoderConnected);
         SmartDashboard.putNumber("Joint Subsystem/Absolute Encoder/Frequency", absoluteEncoderFrequency);
         SmartDashboard.putNumber("Joint Subsystem/Absolute Encoder/Adjusted", absoluteEncoderAdjusted);
         SmartDashboard.putNumber("Joint Subsystem/Absolute Encoder/Raw", absoluteEncoderRaw);
-        SmartDashboard.putNumber("Joint Subsystem/Analog Encoder/Adjusted", analogEncoderAdjusted);
-        SmartDashboard.putNumber("Joint Subsystem/Analog Encoder/Raw", analogEncoderRaw);
-        SmartDashboard.putBoolean("Joint Subsystem/Encoders/Is Matching", analogEncoderAdjusted == absoluteEncoderAdjusted);
-        SmartDashboard.putNumber("Joint Subsystem/Encoders/Get Difference", analogEncoderAdjusted - absoluteEncoderAdjusted);
     }
 
     @Override

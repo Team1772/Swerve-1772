@@ -13,7 +13,7 @@ public final class Constants {
   public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME = 0.13;
   public static final double MAX_SPEED = Units.feetToMeters(14.5);
-  public static final boolean DEV_MODE = true;
+  public static final boolean DEV_MODE = false;
 
   public static class HIDConstants {
     public static final double DEADBAND = 0.1;
@@ -28,8 +28,8 @@ public final class Constants {
 
   public static class IntakeConstants {
     public static final int MOTOR_CAN_ID = 12;
-    public static final double INTAKE = 0.3;
-    public static final double OUTTAKE = -0.6;
+    public static final double INTAKE = -0.4;
+    public static final double OUTTAKE = 0.7;
   }
 
   public static class JointConstants {
@@ -46,7 +46,7 @@ public final class Constants {
     public static final int RELEASE_MOTOR_CAN_ID = 16;
     public static final int ENCODER_DIO_PORT_A = 4;
     public static final int ENCODER_DIO_PORT_B = 5;
-    public static final double POSITION = 45;
+    public static final double POSITION = 100;
     public static final double RELEASE = 0.3;
     public static final double TIGHTEN = 0.31;
   }
@@ -54,7 +54,7 @@ public final class Constants {
   public static class ElevatorConstants {
     public static final int MOTOR_CAN_ID = 15;
     public static final int LIMIT_SWITCH_DIO_PORT = 0;
-    public static final double ASCEND = -0.3;
-    public static final double DESCEND = 0.3;
+    public static final double ASCEND = 1;
+    public static final double DESCEND = -1;
   }
 }
