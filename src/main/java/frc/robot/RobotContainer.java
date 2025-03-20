@@ -31,16 +31,16 @@ public class RobotContainer {
   private final CommandXboxController driverXbox;
   private final CommandXboxController operatorXbox;
 
-  //private final SwerveSubsystem swerveSubsystem;
-  private final Drivetrain swerveSubsystem;
+  private final SwerveSubsystem swerveSubsystem;
+  //private final Drivetrain swerveSubsystem;
 
-  //private final IntakeSubsystem intakeSubsystem;
-  //private final PuncherSubsystem puncherSubsystem;
-  //private final JointSubsystem jointSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
+  private final PuncherSubsystem puncherSubsystem;
+  private final JointSubsystem jointSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
 
-  //private final DriverButtonBindings driverButtonBindings;
-  private final DriverTankButtonBindings driverButtonBindings;
+  private final DriverButtonBindings driverButtonBindings;
+  //private final DriverTankButtonBindings driverButtonBindings;
 
   private final OperatorButtonBindings operatorButtonBindings;
   SendableChooser<Command> autonomousChooser;
@@ -49,15 +49,15 @@ public class RobotContainer {
     driverXbox = new CommandXboxController(0);
     operatorXbox = new CommandXboxController(1);
 
-    //swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
-    swerveSubsystem = new Drivetrain();
-    //intakeSubsystem = new IntakeSubsystem();
-    //puncherSubsystem = new PuncherSubsystem();
-    //jointSubsystem = new JointSubsystem();
+    swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
+    //swerveSubsystem = new Drivetrain();
+    intakeSubsystem = new IntakeSubsystem();
+    puncherSubsystem = new PuncherSubsystem();
+    jointSubsystem = new JointSubsystem();
     elevatorSubsystem = new ElevatorSubsystem();
     
-    //driverButtonBindings = new DriverButtonBindings(driverXbox, swerveSubsystem, intakeSubsystem, jointSubsystem, puncherSubsystem, elevatorSubsystem);
-    driverButtonBindings = new DriverTankButtonBindings(driverXbox, swerveSubsystem, elevatorSubsystem);
+    driverButtonBindings = new DriverButtonBindings(driverXbox, swerveSubsystem, intakeSubsystem, jointSubsystem, puncherSubsystem, elevatorSubsystem);
+    //driverButtonBindings = new DriverTankButtonBindings(driverXbox, swerveSubsystem, elevatorSubsystem);
 
     operatorButtonBindings = new OperatorButtonBindings(operatorXbox);
     configureBindings();
@@ -74,7 +74,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return swerveSubsystem.autonomousCommand();
+    return null;
+    //return swerveSubsystem.autonomousCommand();
     //return null; //autonomousChooser.getSelected();
   }
 
