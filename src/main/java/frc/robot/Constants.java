@@ -29,7 +29,7 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int MOTOR_CAN_ID = 12;
     public static final double INTAKE = -0.4;
-    public static final double OUTTAKE = 0.7;
+    public static final double OUTTAKE = 1.0;
   }
 
   public static class JointConstants {

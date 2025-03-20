@@ -26,85 +26,96 @@ public class DriverTankButtonBindings {
     private final CommandXboxController driverXbox;
 
     private final Drivetrain drivetrain;
-    private final IntakeSubsystem intakeSubsystem;
-    private final JointSubsystem jointSubsystem;
-    private final PuncherSubsystem puncherSubsystem;
+    //private final PuncherSubsystem puncherSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
 
     private final Command driveCommand;
+
+    /*
+    private final IntakeSubsystem intakeSubsystem;
+    private final JointSubsystem jointSubsystem;
 
     private final Command intakeCommand;
     private final Command outtakeCommand;
     private final Command intakeStopCommand;
     private final Command jointAscendCommand;
     private final Command jointDescendCommand;
-    private final Command puncherBuildUpCommand;
-    private final Command puncherReleaseCommand;
-    private final Command elevatorAscendCommand;
-    private final Command elevatorDescendCommand;
+    //private final Command puncherBuildUpCommand;
+    //private final Command puncherReleaseCommand;
     private final Command driverFeedbackCommand;
 
     //private final ConditionalCommand puncherConditionalCommand;
 
-    private final Command testPuncherBuildUpCommand;
-    private final Command testPuncherReleaseCommand;
-    private final Command testPuncherPrintCommand;
+    //private final Command testPuncherBuildUpCommand;
+    //private final Command testPuncherReleaseCommand;
+    //private final Command testPuncherPrintCommand;
     private final Command testIntakeCommand;
     private final Command testOuttakeCommand;
     private final Command testElevatorAscendCommand;
     private final Command testElevatorDescendCommand;
     private final Command testJointCommand;
+    */
+
+    private final Command elevatorAscendCommand;
+    private final Command elevatorDescendCommand;
     
 
-    public DriverTankButtonBindings(CommandXboxController driverXbox, Drivetrain drivetrain, 
-                                IntakeSubsystem intakeSubsystem, JointSubsystem jointSubsystem, PuncherSubsystem puncherSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    //public DriverTankButtonBindings(CommandXboxController driverXbox, Drivetrain drivetrain, IntakeSubsystem intakeSubsystem, JointSubsystem jointSubsystem, PuncherSubsystem puncherSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public DriverTankButtonBindings(CommandXboxController driverXbox, Drivetrain drivetrain, ElevatorSubsystem elevatorSubsystem) {
         this.driverXbox = driverXbox;
 
         this.drivetrain = drivetrain;
+        /*
         this.intakeSubsystem = intakeSubsystem;
         this.jointSubsystem = jointSubsystem;
         this.puncherSubsystem = puncherSubsystem;
+        */
         this.elevatorSubsystem = elevatorSubsystem;
 
         driveCommand = this.drivetrain.drive(this.driverXbox::getLeftY, () -> this.driverXbox.getRightX());
 
+        /* 
         intakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.INTAKE);
         outtakeCommand = this.intakeSubsystem.percentOutCommand(() -> Constants.IntakeConstants.OUTTAKE);
         intakeStopCommand = this.intakeSubsystem.percentOutCommand(() -> 0);
         jointAscendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.ASCEND);
         jointDescendCommand = this.jointSubsystem.percentOutCommand(() -> Constants.JointConstants.DESCEND);
-        puncherBuildUpCommand = this.puncherSubsystem.buildUpCommand(() -> Constants.PuncherConstants.POSITION);
-        puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> Constants.PuncherConstants.RELEASE, () -> Constants.PuncherConstants.TIGHTEN);
+        //puncherBuildUpCommand = this.puncherSubsystem.buildUpCommand(() -> Constants.PuncherConstants.POSITION);
+        //puncherReleaseCommand = this.puncherSubsystem.releaseCommand(() -> Constants.PuncherConstants.RELEASE, () -> Constants.PuncherConstants.TIGHTEN);
+        */
+
         elevatorAscendCommand = this.elevatorSubsystem.percentOutCommand(() -> Constants.ElevatorConstants.ASCEND);
         elevatorDescendCommand = this.elevatorSubsystem.descendCommand();
 
         
 
-        driverFeedbackCommand = Commands.startEnd(() -> this.driverXbox.setRumble(RumbleType.kBothRumble, 1), () -> this.driverXbox.setRumble(RumbleType.kBothRumble, 0), puncherSubsystem).withTimeout(2);
+        //driverFeedbackCommand = Commands.startEnd(() -> this.driverXbox.setRumble(RumbleType.kBothRumble, 1), () -> this.driverXbox.setRumble(RumbleType.kBothRumble, 0), puncherSubsystem).withTimeout(2);
         //puncherConditionalCommand = new ConditionalCommand(puncherBuildUpCommand, driverFeedbackCommand, () -> jointSubsystem.isSafeBuildUpAngle() && !puncherSubsystem.isPuncherReady());
 
-        testPuncherBuildUpCommand = this.puncherSubsystem.testBuildUpCommand();
-        testPuncherReleaseCommand = this.puncherSubsystem.testReleaseCommand();
-        testPuncherPrintCommand = this.puncherSubsystem.testPrintCommand();
+        //testPuncherBuildUpCommand = this.puncherSubsystem.testBuildUpCommand();
+        //testPuncherReleaseCommand = this.puncherSubsystem.testReleaseCommand();
+        //testPuncherPrintCommand = this.puncherSubsystem.testPrintCommand();
+        /*
         testIntakeCommand = this.intakeSubsystem.testIntakeCommand();
         testOuttakeCommand = this.intakeSubsystem.testOuttakeCommand();
         testElevatorAscendCommand = this.elevatorSubsystem.testAscendCommand();
         testElevatorDescendCommand = this.elevatorSubsystem.testDescendCommand();
         testJointCommand = this.jointSubsystem.testOpenLoopCommand();
+        */
     }
 
     public void configureBindings() {
         drivebaseButtonBindings();
 
         if(Constants.DEV_MODE) {
-            intakeTestButtonBindings();
-            jointTestButtonBindings();
-            puncherTestButtonBindings();
-            elevatorTestButtonBindings();
+            //intakeTestButtonBindings();
+            //jointTestButtonBindings();
+            //puncherTestButtonBindings();
+            //elevatorTestButtonBindings();
         } else {
-            intakeButtonBindings();
-            jointButtonBindings();
-            puncherButtonBindings();
+            //intakeButtonBindings();
+            //jointButtonBindings();
+            //puncherButtonBindings();
             elevatorButtonBindings();
         }
     }
@@ -113,6 +124,7 @@ public class DriverTankButtonBindings {
         drivetrain.setDefaultCommand(driveCommand);
     }
 
+    /*
     public void intakeTestButtonBindings() {
         driverXbox.y().whileTrue(testIntakeCommand); //TESTAR
         driverXbox.x().whileTrue(testOuttakeCommand); //TESTAR
@@ -126,9 +138,8 @@ public class DriverTankButtonBindings {
     }
 
     public void puncherTestButtonBindings() {
-        //driverXbox.leftBumper().onTrue(puncherConditionalCommand); //TESTAR
-        driverXbox.leftBumper().whileTrue(puncherBuildUpCommand);
-        driverXbox.rightBumper().onTrue(testPuncherReleaseCommand);
+        //driverXbox.leftBumper().whileTrue(puncherBuildUpCommand);
+        //driverXbox.rightBumper().onTrue(testPuncherReleaseCommand);
 
     }
 
@@ -152,7 +163,7 @@ public class DriverTankButtonBindings {
         driverXbox.leftBumper().whileTrue(puncherBuildUpCommand);
         driverXbox.rightBumper().onTrue(testPuncherReleaseCommand);
     }
-
+    */
     public void elevatorButtonBindings() {
         driverXbox.povLeft().whileTrue(elevatorAscendCommand);
         driverXbox.povRight().whileTrue(elevatorDescendCommand);

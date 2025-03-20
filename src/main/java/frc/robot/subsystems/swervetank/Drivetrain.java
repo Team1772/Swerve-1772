@@ -69,7 +69,7 @@ public class Drivetrain extends SubsystemBase {
 
         globalDriveConfig
             .smartCurrentLimit(50)
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
 
         globalAngleConfig
             .smartCurrentLimit(50)
@@ -108,7 +108,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Command drive(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) {
-        return this.run(() -> differentialDrive.arcadeDrive(leftSpeed.getAsDouble(), rightSpeed.getAsDouble()));
+        return this.run(() -> differentialDrive.arcadeDrive(-leftSpeed.getAsDouble(), -rightSpeed.getAsDouble()));
     }
 
     public void setMotorBrake(boolean isBrake) {
@@ -120,7 +120,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Command autonomousCommand() {
-        return this.runEnd(() -> differentialDrive.tankDrive(1, 1), differentialDrive::stopMotor).withTimeout(5);
+        return this.runEnd(() -> differentialDrive.tankDrive(-0.8, -0.8), differentialDrive::stopMotor).withTimeout(5);
     }
 
     public void lockMotors() {
